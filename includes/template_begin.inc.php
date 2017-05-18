@@ -16,8 +16,8 @@
 	<link href="./style/site.css" rel="stylesheet">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="./js/jquery.tablesorter.js"></script>
-	<script type="text/javascript" src="./js/jquery.tablesorter.pager.js"></script>
+	<script src="https://cdn.jsdelivr.net/tablesorter/2.28.9/js/jquery.tablesorter.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/tablesorter/2.28.9/js/extras/jquery.tablesorter.pager.min.js"></script>
 
 	<script type="text/javascript">
 		$(function() {

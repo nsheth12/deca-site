@@ -30,7 +30,7 @@ while ($row = $statsResult->fetch_assoc()){
 
 if ($totalAttempts != 0){
 	$percentage = round(($solved * 100) / $totalAttempts);
-	$avgAttemptsPerCorrectSolution = round($totalAttemptsOnSolvedProblems / $solved, 2);
+	$avgAttemptsPerCorrectSolution = round($totalAttemptsOnSolvedProblems / $solved, 2); //gives divide by zero errors, should fix
 }
 else{
 	$error = true;
