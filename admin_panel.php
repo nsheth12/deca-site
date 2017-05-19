@@ -3,6 +3,7 @@ require_once('./includes/admin_redirect.inc.php');
 require_once('./includes/connection.inc.php');
 
 $successfulReset = false;
+$unsuccessfulReset = false;
 
 if (isset($_POST["reset"])) {
 	$conn = dbConnect("write");
@@ -14,6 +15,9 @@ if (isset($_POST["reset"])) {
 	if ($conn->multi_query($sql)) {
 		$successfulReset = true;
 	}
+	else {
+		$unsuccessfulReset = true;
+	}
 }
 
 $title = "Administrator Panel | NEO";
@@ -21,6 +25,7 @@ require_once("./includes/template_begin.inc.php");
 ?>
 
 <?php if ($successfulReset) echo "Successful reset"; ?>
+<?php if ($unsuccessfulReset) echo "There was an error in the end-of-year reset"; ?>
 <p>
 	<form method="post" action="">
 		<label>Use this option to add valid emails to the NEO system:</label><br>
