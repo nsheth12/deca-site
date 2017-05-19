@@ -11,6 +11,9 @@
 			<?php if (isAdmin($_SESSION['user_id'])) {?>
 				<li <?php if ($title == "Administrator Report | NEO") {echo 'class="active"';} ?> role="presentation"><a href="admin_report.php">Admin Report</a></li>
 			<?php } ?>
+			<?php if (isAdmin($_SESSION['user_id'])) {?>
+				<li <?php if ($title == "Administrator Panel | NEO") {echo 'class="active"';} ?> role="presentation"><a href="admin_panel.php">Admin Panel</a></li>
+			<?php } ?>
 			<li role="presentation"><a href="logout.php">Log out</a></li>
 		  </ul>
 		</nav>
