@@ -12,6 +12,8 @@ if (isset($_POST["reset"])) {
 	$sql .= "TRUNCATE TABLE valid_emails;";
 	$sql .= "DELETE FROM users WHERE user_id <> 314 AND user_id <> 316;";
 
+	// even if tables do not exist, MySQL will not see this as an error
+	// it will just move on but the expected results will not be seen
 	if ($conn->multi_query($sql)) {
 		$successfulReset = true;
 	}
@@ -27,7 +29,7 @@ require_once("./includes/template_begin.inc.php");
 <?php if ($successfulReset) echo "Successful reset"; ?>
 <?php if ($unsuccessfulReset) echo "There was an error in the end-of-year reset"; ?>
 <p>
-	<form method="post" action="">
+	<form method="post" onsubmit="return confirm('Are you sure you want to do this? This cannot be undone.');" action="">
 		<label>Use this option to add valid emails to the NEO system:</label><br>
 		<a href="add_valid_email.php" class="btn btn-default">Add Valid Emails</a><br><br>
 
