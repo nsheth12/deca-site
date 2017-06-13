@@ -17,8 +17,13 @@ if ($result->num_rows == 1){
 else{
 	$foundProblem = false;
 	$userSql = 'SELECT * FROM users WHERE user_id = ' . $_SESSION['user_id'];
-	$result = $conn->query($userSql);
-	$user = $result->fetch_assoc();
+	$userQueryResult = $conn->query($userSql);
+
+	if (!$userQueryResult){
+		echo("There was an error in the database query.");
+	}
+
+	$user = $userQueryResult->fetch_assoc();
 	$sqlRandomSelect = 'SELECT
 							problems.problem_statement,
 							problems.choice_1,
