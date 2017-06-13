@@ -6,11 +6,14 @@ $error = false;
 if (isset($_POST['email']) && isset($_POST['pwd'])){
 	require_once("./includes/connection.inc.php");
 
-	$conn = dbConnect("write");
+	$email = $_POST["email"];
+	$pwd = $_POST["pwd"];
+
+	$conn = dbConnect("read");
 	$sql = "SELECT user_id FROM users WHERE email = ? AND password = ? AND con_code IS NULL";
 	$stmt = $conn->stmt_init();
 	$stmt->prepare($sql);
-	$stmt->bind_param('ss', $_POST['email'], $_POST['pwd']);
+	$stmt->bind_param('ss', $email, $pwd);
 	$stmt->bind_result($user_id);
 	$stmt->execute();
 	$stmt->store_result();
