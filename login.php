@@ -2,7 +2,7 @@
 require("./includes/logged_in_redirect.inc.php");
 require_once('./includes/update_login_logout_log.inc.php');
 
-$error = false;
+$error = "";
 if (isset($_POST['email']) && isset($_POST['pwd'])){
 	require_once("./includes/connection.inc.php");
 
@@ -10,22 +10,27 @@ if (isset($_POST['email']) && isset($_POST['pwd'])){
 	$pwd = $_POST["pwd"];
 
 	$conn = dbConnect("read");
-	$sql = "SELECT user_id FROM users WHERE email = ? AND password = ? AND con_code IS NULL";
+	$sql = "SELECT user_id, password FROM users WHERE email = ? AND con_code IS NULL";
 	$stmt = $conn->stmt_init();
 	$stmt->prepare($sql);
-	$stmt->bind_param('ss', $email, $pwd);
-	$stmt->bind_result($user_id);
+	$stmt->bind_param('s', $email);
+	$stmt->bind_result($user_id, $hashed_password);
 	$stmt->execute();
 	$stmt->store_result();
 	if ($stmt->num_rows == 1){
 		$stmt->fetch();
-		$_SESSION['user_id'] = $user_id;
-		updateLoginLogout($conn, $user_id, true);
-		header('Location: get_problem.php');
-		exit;
+		if (password_verify($pwd, $hashed_password)){
+			$_SESSION['user_id'] = $user_id;
+			updateLoginLogout($conn, $user_id, true);
+			header('Location: get_problem.php');
+			exit;
+		}
+		else{
+			$error = "Incorrect password.";
+		}
 	}
 	else{
-		$error = true;
+		$error = "Email address entered does not correspond to a valid account.";
 	}
 }
 
@@ -37,7 +42,7 @@ require_once("./includes/template_begin.inc.php");
 	<div class="col-xs-12 col-md-8">
 		<div class="jumbotron" style="padding-top: 12px;">
 			<h2>Login</h2>
-			<?php if ($error){?><p>Invalid login</p><?php } ?>
+			<?php if ($error != ""){?><p><?php echo($error);?></p><?php } ?>
 			<form action="" method="post" id="form1" style="margin-left: 10px; margin-right: 10px;">
 				<div class="form-group">
 					<label for="email">Email:</label>

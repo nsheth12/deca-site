@@ -43,7 +43,6 @@ function cycleChange () {
         <?php } ?>
     </select><br>
 <?php } ?>
-<h4><strong>Password:</strong> <?php for ($i = 0; $i < strlen($user['password']); $i++) echo '*'; ?></h4>
 <button id="changePassword" class="btn btn-default" onclick="window.open('change_password.php')">Change Password</button>
 
 <?php

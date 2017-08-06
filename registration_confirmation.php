@@ -43,7 +43,8 @@ else{
 	$problem_on_init = NULL;
 	$firstName = trim(strtolower($_POST['firstName']));
 	$lastName = trim(strtolower($_POST['lastName']));
-	$stmt->bind_param('sssddss', $email, $pwd, $con_code, $cluster, $problem_on_init, $firstName, $lastName);
+	$hashed_pwd = password_hash($pwd, PASSWORD_DEFAULT);
+	$stmt->bind_param('sssddss', $email, $hashed_pwd, $con_code, $cluster, $problem_on_init, $firstName, $lastName);
 	$stmt->execute();
 
 	$subject = "NEO Registration Confirmation for $email";
@@ -57,7 +58,7 @@ else{
 	<title>Registration Confirmation</title>
 </head>
 <body>
-	<p>A confirmation email has been sent to the email address you indicated. Make sure you whitelist nsheth12@a2plcpnl0218.prod.iad2.secureserver.net so your email provider doesn't block it. It may take a few minutes to arrive, so please be patient. If after some time you still have not received the email, check your junk/spam folder.</p>
+	<p>A confirmation email has been sent to the email address you indicated. It may take a few minutes to arrive, so please be patient. If after some time you still have not received the email, check your junk/spam folder.</p>
 	<p><a href="register.php">Go back</a></p>
 </body>
 </html>
