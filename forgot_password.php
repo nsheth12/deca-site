@@ -8,19 +8,16 @@ if (isset($_POST['forgot_password_email'])){
 
     require_once("./includes/connection.inc.php");
 
-    $conn = dbConnect('read');
-    $sql = 'SELECT password FROM users WHERE email = ? AND con_code IS NULL';
+    $conn = dbConnect('write');
+    $sql = 'UPDATE users SET password = ? WHERE email = ? AND con_code IS NULL';
     $stmt = $conn->stmt_init();
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('s', $_POST['forgot_password_email']);
-    $stmt->bind_result($pword);
+    $new_password = md5(uniqid(rand()));
+    $stmt->bind_param('ss', password_hash($new_password, PASSWORD_DEFAULT), $_POST['forgot_password_email']);
     $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows == 1){
-        $stmt->fetch();
-
+    if ($stmt->affected_rows == 1){
         $subject = "Your NEO Password";
-        $message = "As you requested, your NEO password is: " . $pword;
+        $message = "As you requested, your NEO password is: " . $new_password;
         $sentmail = mail($email, $subject, $message);
 
         $sent_password = true;
@@ -41,10 +38,10 @@ require_once("./includes/template_begin.inc.php");
             <label for="email">Email Address Used to Sign Up for NEO:</label>
             <input type="email" name="forgot_password_email" id="email" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-success" name="frgPword" id="frgPword">Recover Password</button>
+        <button type="submit" class="btn btn-success" name="frgPword" id="frgPword">Reset Password</button>
     </form>
 <?php } else { ?>
-    Your password has been sent to your email address. Please be patient as you wait for it to arrive.
+    A temporary password has been sent to your email address. Please be patient as you wait for it to arrive. Once you get the password, you can log in and change it to a password of your preference.
 <?php } ?>
 
 <?php

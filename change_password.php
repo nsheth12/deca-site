@@ -12,12 +12,20 @@ if (isset($_POST['curPwd']) && isset($_POST['newPwd']) && isset($_POST['rNewPwd'
 	if (strcmp($newPword, $rtypeNewPword) == 0){
 		require_once("./includes/connection.inc.php");
 		$conn = dbConnect('write');
-		$sql = 'UPDATE users SET password = ? WHERE user_id = ? AND password = ?';
-		$stmt = $conn->prepare($sql);
-		$stmt->bind_param('sds', $newPword, $uid, $currentPassword);
-		$stmt->execute();
-		if ($stmt->affected_rows == 1 || strcmp($currentPassword, $newPword) == 0) $changed = true;
-		else { $error = true; }
+		$results = $conn->query("SELECT password FROM users WHERE user_id = " . $uid . " AND con_code is NULL");
+		if ($results->num_rows == 1 && password_verify($currentPassword, $results->fetch_assoc()["password"])){
+			$sql = 'UPDATE users SET password = ? WHERE user_id = ?';
+			$stmt = $conn->prepare($sql);
+			$stmt->bind_param('sd', password_hash($newPword, PASSWORD_DEFAULT), $uid);
+			$stmt->execute();
+			if ($stmt->affected_rows == 1 || strcmp($currentPassword, $newPword) == 0) $changed = true;
+			else {
+				$error = true;
+			}
+		}
+		else {
+			$error = true;
+		}
 	}
 	else{
 		$error = true;
@@ -46,7 +54,7 @@ require_once("./includes/template_begin.inc.php");
 		<button type="submit" class="btn btn-success" name="changePword" id="changePword">Change Password</button>
 	</form>
 <?php } else { ?>
-	<h2>You have successfully changed your password. <a href="#" onclick="self.close()">Close window.</a></h2>
+	<h2>You have successfully changed your password.<br><a href="#" onclick="self.close()">Close window.</a></h2>
 <?php } ?>
 
 <?php
