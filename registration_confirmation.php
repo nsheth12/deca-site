@@ -58,7 +58,7 @@ else{
 	<title>Registration Confirmation</title>
 </head>
 <body>
-	<p>A confirmation email has been sent to the email address you indicated. It may take a few minutes to arrive, so please be patient. If after some time you still have not received the email, check your junk/spam folder.</p>
+	<p>A confirmation email has been sent to the email address you indicated. It may take a few minutes to arrive, so please be patient. If after some time you still have not received the email, check your junk/spam folder, and search for an email from "www-data@wadecatraining.org".</p>
 	<p><a href="register.php">Go back</a></p>
 </body>
 </html>
