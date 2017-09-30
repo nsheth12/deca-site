@@ -5,7 +5,7 @@ require_once("./includes/connection.inc.php");
 $problem = null;
 $conn = dbConnect('write');
 
-// check if the user is already on a proble
+// check if the user is already on a problem
 $sqlCheckIfProblemOn = "SELECT problem_on_id FROM users WHERE user_id = " . $_SESSION['user_id'] . " AND problem_on_id IS NOT NULL AND current_cycle = max_cycle";
 $result = $conn->query($sqlCheckIfProblemOn);
 
@@ -17,7 +17,7 @@ if ($result->num_rows == 1){
 	$foundProblem = true;
 }
 else{
-	// otherwise, find the user a new problems
+	// otherwise, find the user a new problem
 	$foundProblem = false;
 	$userSql = 'SELECT * FROM users WHERE user_id = ' . $_SESSION['user_id'];
 	$userQueryResult = $conn->query($userSql);
@@ -58,7 +58,7 @@ else{
 	}
 }
 
-// set problem ID session variable
+// set problem ID session variable for use on other pages
 if ($foundProblem){
 	$_SESSION['problem_id'] = $problem['problem_id'];
 }
