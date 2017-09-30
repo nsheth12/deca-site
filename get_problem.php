@@ -5,16 +5,19 @@ require_once("./includes/connection.inc.php");
 $problem = null;
 $conn = dbConnect('write');
 
+// check if the user is already on a proble
 $sqlCheckIfProblemOn = "SELECT problem_on_id FROM users WHERE user_id = " . $_SESSION['user_id'] . " AND problem_on_id IS NOT NULL AND current_cycle = max_cycle";
 $result = $conn->query($sqlCheckIfProblemOn);
 
 if ($result->num_rows == 1){
+	// if yes, give the user that problem
 	$sqlProblemSelect = 'SELECT * FROM problems WHERE problem_id = ' . $result->fetch_assoc()['problem_on_id'];
 	$problemQueryResult = $conn->query($sqlProblemSelect);
 	$problem = $problemQueryResult->fetch_assoc();
 	$foundProblem = true;
 }
 else{
+	// otherwise, find the user a new problems
 	$foundProblem = false;
 	$userSql = 'SELECT * FROM users WHERE user_id = ' . $_SESSION['user_id'];
 	$userQueryResult = $conn->query($userSql);
@@ -24,6 +27,8 @@ else{
 	}
 
 	$user = $userQueryResult->fetch_assoc();
+
+	// SQL query for a problem that the user has not solved and is in their cluster
 	$sqlRandomSelect = 'SELECT
 							problems.problem_statement,
 							problems.choice_1,
@@ -37,12 +42,13 @@ else{
 						ORDER BY RAND()
 						LIMIT 1;';
 	$result = $conn->query($sqlRandomSelect);
+
 	if ($result->num_rows > 0){
 		$foundProblem = true;
 		$problem = $result->fetch_assoc();
 	}
 
-	//Set problemOn
+	// set problemOn
 	if ($foundProblem){
 		$sqlSetProblemOn = 'UPDATE users SET problem_on_id = ? WHERE user_id = ?';
 		$stmt = $conn->stmt_init();
@@ -52,6 +58,7 @@ else{
 	}
 }
 
+// set problem ID session variable
 if ($foundProblem){
 	$_SESSION['problem_id'] = $problem['problem_id'];
 }
@@ -62,8 +69,9 @@ require_once("./includes/template_begin.inc.php");
 
 <?php if ($foundProblem){ ?>
 	<script type="text/javascript">
+		// onClick handler for reporting errors, opens report_error.php in new tab
+		// without popup alerts using hidden form field
 		function submitForm (){
-			//$('#pidField').val(pid);
 			$('#pidForm').submit();
 		}
 	</script>
@@ -94,8 +102,9 @@ require_once("./includes/template_begin.inc.php");
 		</form>
 	</div>
 <?php } else {
+	// if no problems were found (the user has completed all problems)
 	if ($user['current_cycle'] == $user['max_cycle']){
-		//increment max_cycle
+		// increment max_cycle so they repeat all problems
 		$sqlIncrementMaxCycle = 'UPDATE users SET max_cycle = max_cycle + 1 WHERE user_id = ?';
 		$stmtMaxCycle = $conn->stmt_init();
 		$stmtMaxCycle->prepare($sqlIncrementMaxCycle);
